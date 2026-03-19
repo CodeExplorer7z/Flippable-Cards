@@ -20,29 +20,30 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: space-around; /* Distribuye elementos verticalmente */
+            justify-content: center; /* Centra todo verticalmente */
             height: 100vh;
             margin: 0;
             padding: 10px;
             box-sizing: border-box;
             overflow: hidden;
+            gap: 20px; /* Espacio entre elementos */
         }
 
         .header {
             width: 100%;
-            max-width: 400px;
+            max-width: 350px;
             display: flex;
             justify-content: space-between;
-            font-size: 1.1rem;
-            padding: 10px;
+            font-size: 1rem;
+            padding: 5px 10px;
         }
 
-        /* AJUSTE CLAVE: Contenedor responsivo */
+        /* RECUADRO MÁS PEQUEÑO */
         .flashcard-container {
             perspective: 1000px;
-            width: 90vw; /* 90% del ancho de pantalla */
-            max-width: 400px;
-            aspect-ratio: 3 / 4; /* Mantiene forma de tarjeta vertical */
+            width: 85vw; 
+            max-width: 320px;
+            aspect-ratio: 1 / 1; /* Ahora es cuadrado para ganar espacio vertical */
             cursor: pointer;
         }
 
@@ -52,8 +53,8 @@
             position: relative;
             transform-style: preserve-3d;
             transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-            border-radius: 15px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.5);
+            border-radius: 20px;
         }
 
         .flashcard.is-flipped {
@@ -69,7 +70,7 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            border-radius: 15px;
+            border-radius: 20px;
             background-color: var(--card-bg);
             padding: 20px;
             box-sizing: border-box;
@@ -81,26 +82,27 @@
         }
 
         .word {
-            font-size: 2.2rem; /* Tamaño ajustable para móvil */
+            font-size: 1.8rem; /* Un poco más pequeño para el recuadro cuadrado */
             font-weight: bold;
             word-wrap: break-word;
+            max-width: 100%;
         }
 
         .controls-top {
             position: absolute;
-            top: 15px;
-            right: 15px;
-            display: flex;
-            gap: 15px;
+            top: 12px;
+            right: 12px;
         }
 
         .btn-icon {
-            background: rgba(255,255,255,0.1);
+            background: rgba(255,255,255,0.15);
             border: none;
             color: white;
-            padding: 10px;
+            padding: 8px;
             border-radius: 50%;
-            font-size: 1.2rem;
+            font-size: 1.1rem;
+            width: 40px;
+            height: 40px;
         }
 
         .footer-action {
@@ -109,27 +111,39 @@
             width: 100%;
             background-color: var(--footer-color);
             text-align: center;
-            padding: 12px 0;
-            border-bottom-left-radius: 15px;
-            border-bottom-right-radius: 15px;
-            font-size: 0.85rem;
+            padding: 8px 0;
+            border-bottom-left-radius: 20px;
+            border-bottom-right-radius: 20px;
+            font-size: 0.75rem;
+            opacity: 0.9;
         }
 
+        /* NAVEGACIÓN VISIBLE */
         .navigation {
             display: flex;
-            gap: 30px;
-            padding-bottom: 20px;
+            gap: 40px;
+            margin-top: 10px;
         }
 
         .nav-btn {
             background-color: var(--accent-color);
             color: white;
             border: none;
-            width: 60px;
-            height: 60px;
+            width: 55px;
+            height: 55px;
             border-radius: 50%;
-            font-size: 1.5rem;
+            font-size: 1.4rem;
             box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .nav-btn:active {
+            transform: scale(0.9);
+            background-color: #5a71a8;
         }
     </style>
 </head>
@@ -147,7 +161,7 @@
                     <button class="btn-icon" onclick="speak('ru'); event.stopPropagation();">🔊</button>
                 </div>
                 <div class="word" id="russianWord">Университет</div>
-                <div class="footer-action">Toca la ficha para voltear</div>
+                <div class="footer-action">Toca para voltear</div>
             </div>
             
             <div class="card-face card-back">
