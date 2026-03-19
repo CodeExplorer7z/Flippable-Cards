@@ -16,34 +16,33 @@
         body {
             background-color: var(--bg-color);
             color: var(--text-color);
-            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            font-family: 'Segoe UI', Roboto, sans-serif;
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: space-between;
+            justify-content: space-around; /* Distribuye elementos verticalmente */
             height: 100vh;
             margin: 0;
-            padding: 20px;
+            padding: 10px;
             box-sizing: border-box;
-            overflow: hidden; /* Evita scroll innecesario en móviles */
+            overflow: hidden;
         }
 
         .header {
             width: 100%;
+            max-width: 400px;
             display: flex;
             justify-content: space-between;
             font-size: 1.1rem;
-            font-weight: bold;
-            padding: 10px 0;
+            padding: 10px;
         }
 
-        /* Contenedor de la ficha adaptable */
+        /* AJUSTE CLAVE: Contenedor responsivo */
         .flashcard-container {
             perspective: 1000px;
-            width: 100%;
-            max-width: 400px; /* Límite para que no se vea gigante en tablets */
-            height: 50vh; /* Altura basada en la pantalla */
-            min-height: 300px;
+            width: 90vw; /* 90% del ancho de pantalla */
+            max-width: 400px;
+            aspect-ratio: 3 / 4; /* Mantiene forma de tarjeta vertical */
             cursor: pointer;
         }
 
@@ -52,9 +51,9 @@
             height: 100%;
             position: relative;
             transform-style: preserve-3d;
-            transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
-            border-radius: 20px;
+            transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            border-radius: 15px;
         }
 
         .flashcard.is-flipped {
@@ -70,9 +69,9 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            border-radius: 20px;
+            border-radius: 15px;
             background-color: var(--card-bg);
-            padding: 25px;
+            padding: 20px;
             box-sizing: border-box;
             text-align: center;
         }
@@ -82,10 +81,9 @@
         }
 
         .word {
-            font-size: 2.2rem; /* Tamaño reducido para palabras largas en móvil */
-            font-weight: 600;
+            font-size: 2.2rem; /* Tamaño ajustable para móvil */
+            font-weight: bold;
             word-wrap: break-word;
-            max-width: 100%;
         }
 
         .controls-top {
@@ -93,20 +91,16 @@
             top: 15px;
             right: 15px;
             display: flex;
-            gap: 20px;
+            gap: 15px;
         }
 
         .btn-icon {
             background: rgba(255,255,255,0.1);
             border: none;
             color: white;
-            font-size: 1.4rem;
-            width: 45px;
-            height: 45px;
+            padding: 10px;
             border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            font-size: 1.2rem;
         }
 
         .footer-action {
@@ -116,44 +110,26 @@
             background-color: var(--footer-color);
             text-align: center;
             padding: 12px 0;
-            border-bottom-left-radius: 20px;
-            border-bottom-right-radius: 20px;
-            font-size: 0.8rem;
-            opacity: 0.8;
+            border-bottom-left-radius: 15px;
+            border-bottom-right-radius: 15px;
+            font-size: 0.85rem;
         }
 
         .navigation {
-            width: 100%;
-            max-width: 400px;
             display: flex;
-            justify-content: center;
-            gap: 40px;
-            padding-bottom: 30px;
+            gap: 30px;
+            padding-bottom: 20px;
         }
 
         .nav-btn {
             background-color: var(--accent-color);
             color: white;
             border: none;
-            width: 70px;
-            height: 70px;
+            width: 60px;
+            height: 60px;
             border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.8rem;
+            font-size: 1.5rem;
             box-shadow: 0 4px 10px rgba(0,0,0,0.3);
-            -webkit-tap-highlight-color: transparent; /* Quita el cuadro azul al tocar en Android */
-        }
-
-        .nav-btn:active {
-            transform: scale(0.95);
-            background-color: #5a71a8;
-        }
-        
-        .nav-btn:disabled {
-            background-color: #222;
-            opacity: 0.5;
         }
     </style>
 </head>
@@ -169,26 +145,23 @@
             <div class="card-face card-front">
                 <div class="controls-top">
                     <button class="btn-icon" onclick="speak('ru'); event.stopPropagation();">🔊</button>
-                    <button class="btn-icon" onclick="event.stopPropagation();">★</button>
                 </div>
                 <div class="word" id="russianWord">Университет</div>
-                <div class="footer-action">Toca para voltear</div>
+                <div class="footer-action">Toca la ficha para voltear</div>
             </div>
             
             <div class="card-face card-back">
                 <div class="controls-top">
                     <button class="btn-icon" onclick="speak('es'); event.stopPropagation();">🔊</button>
-                    <button class="btn-icon" onclick="event.stopPropagation();">★</button>
                 </div>
                 <div class="word" id="spanishWord">universidad</div>
-                <div class="footer-action">Toca para volver</div>
             </div>
         </div>
     </div>
 
     <div class="navigation">
-        <button class="nav-btn" onclick="prevCard()" id="prevBtn">←</button>
-        <button class="nav-btn" onclick="nextCard()" id="nextBtn">→</button>
+        <button class="nav-btn" onclick="prevCard(event)" id="prevBtn">←</button>
+        <button class="nav-btn" onclick="nextCard(event)" id="nextBtn">→</button>
     </div>
 
     <script>
@@ -229,7 +202,7 @@
         }
 
         function nextCard(e) {
-            if (e) e.stopPropagation();
+            e.stopPropagation();
             if (currentIndex < words.length - 1) {
                 currentIndex++;
                 updateCard();
@@ -237,7 +210,7 @@
         }
 
         function prevCard(e) {
-            if (e) e.stopPropagation();
+            e.stopPropagation();
             if (currentIndex > 0) {
                 currentIndex--;
                 updateCard();
