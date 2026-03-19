@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fichas de Ruso</title>
+    <style>
+        :root {
+            --bg-color: #0f0f2d;
+            --card-bg: #2b3552;
+            --text-color: #ffffff;
+            --accent-color: #4a5d8a;
+            --footer-color: #1e216e;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .header {
+            position: absolute;
+            top: 20px;
+            width: 90%;
+            display: flex;
+            justify-content: space-between;
+            font-size: 1.2rem;
+        }
+
+        /* Contenedor de la ficha */
+        .flashcard-container {
+            perspective: 1000px;
+            width: 600px;
+            height: 350px;
+            cursor: pointer;
+        }
+
+        .flashcard {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            transform-style: preserve-3d;
+            transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            border-radius: 15px;
+        }
+
+        .flashcard.is-flipped {
+            transform: rotateY(180deg);
+        }
+
+        .card-face {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            border-radius: 15px;
+            background-color: var(--card-bg);
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        .card-back {
+            transform: rotateY(180deg);
+        }
+
+        .word {
+            font-size: 3rem;
+            font-weight: 500;
+        }
+
+        .controls-top {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            display: flex;
+            gap: 15px;
+        }
+
+        .btn-icon {
+            background: none;
+            border: none;
+            color: rgba(255,255,255,0.7);
+            font-size: 1.2rem;
+            cursor: pointer;
+        }
+
+        .btn-icon:hover { color: white; }
+
+        .footer-action {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            background-color: var(--footer-color);
+            text-align: center;
+            padding: 10px 0;
+            border-bottom-left-radius: 15px;
+            border-bottom-right-radius: 15px;
+            font-size: 0.9rem;
+        }
+
+        .navigation {
+            margin-top: 40px;
+            display: flex;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .nav-btn {
+            background-color: var(--accent-color);
+            color: white;
+            border: none;
+            padding: 15px 25px;
+            border-radius: 50px;
+            cursor: pointer;
+            font-size: 1.5rem;
+            transition: background 0.3s;
+        }
+
+        .nav-btn:hover { background-color: #5a71a8; }
+        
+        .nav-btn:disabled {
+            background-color: #333;
+            cursor: not-allowed;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <span>Fichas ⌵</span>
+        <span id="counter">1 / 14</span>
+    </div>
+
+    <div class="flashcard-container" onclick="flipCard()">
+        <div class="flashcard" id="card">
+            <div class="card-face card-front">
+                <div class="controls-top">
+                    <button class="btn-icon" onclick="speak('ru'); event.stopPropagation();">🔊</button>
+                    <button class="btn-icon" onclick="event.stopPropagation();">★</button>
+                </div>
+                <div class="word" id="russianWord">Университет</div>
+                <div class="footer-action">Haz clic en la ficha para voltearla</div>
+            </div>
+            
+            <div class="card-face card-back">
+                <div class="controls-top">
+                    <button class="btn-icon" onclick="speak('es'); event.stopPropagation();">🔊</button>
+                    <button class="btn-icon" onclick="event.stopPropagation();">★</button>
+                </div>
+                <div class="word" id="spanishWord">universidad</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="navigation">
+        <button class="nav-btn" onclick="prevCard()" id="prevBtn">←</button>
+        <button class="nav-btn" onclick="nextCard()" id="nextBtn">→</button>
+    </div>
+
+    <script>
+        const words = [
+            { ru: "Университет", es: "universidad" },
+            { ru: "Москва", es: "Moscú" },
+            { ru: "История", es: "historia" },
+            { ru: "Приключение", es: "aventura" },
+            { ru: "Россия", es: "Rusia" },
+            { ru: "Общежитие", es: "residencia" },
+            { ru: "Комната", es: "habitación" },
+            { ru: "Дверь", es: "puerta" },
+            { ru: "Собака", es: "perro" },
+            { ru: "Медведь", es: "oso" },
+            { ru: "Кот", es: "gato" },
+            { ru: "Африка", es: "África" },
+            { ru: "Город", es: "ciudad" },
+            { ru: "Сосед", es: "vecino" }
+        ];
+
+        let currentIndex = 0;
+        const card = document.getElementById('card');
+        const russianEl = document.getElementById('russianWord');
+        const spanishEl = document.getElementById('spanishWord');
+        const counterEl = document.getElementById('counter');
+
+        function updateCard() {
+            // Quitamos la clase de volteo para que la nueva palabra aparezca de frente
+            card.classList.remove('is-flipped');
+            
+            setTimeout(() => {
+                russianEl.innerText = words[currentIndex].ru;
+                spanishEl.innerText = words[currentIndex].es;
+                counterEl.innerText = `${currentIndex + 1} / ${words.length}`;
+            }, 150);
+        }
+
+        function flipCard() {
+            card.classList.toggle('is-flipped');
+        }
+
+        function nextCard() {
+            if (currentIndex < words.length - 1) {
+                currentIndex++;
+                updateCard();
+            }
+        }
+
+        function prevCard() {
+            if (currentIndex > 0) {
+                currentIndex--;
+                updateCard();
+            }
+        }
+
+        function speak(lang) {
+            const text = lang === 'ru' ? words[currentIndex].ru : words[currentIndex].es;
+            const utterance = new SpeechSynthesisUtterance(text);
+            utterance.lang = lang === 'ru' ? 'ru-RU' : 'es-ES';
+            window.speechSynthesis.speak(utterance);
+        }
+    </script>
+</body>
+</html>
